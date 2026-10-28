@@ -1,0 +1,45 @@
+{
+  "name": "replayed-trade",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Turn one trade into a shareable replay video, rendered in the browser.",
+  "packageManager": "pnpm@11.13.1",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "e2e": "playwright test",
+    "frames": "tsx scripts/render-frames.ts"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1",
+    "lightweight-charts": "^5.2.1",
+    "lz-string": "^1.5.0",
+    "mediabunny": "^1.62.1",
+    "next": "^15.5.28",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "zod": "^4.6.7",
+    "zustand": "^5.0.16"
+  },
+  "devDependencies": {
+    "@fontsource/archivo": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "@napi-rs/canvas": "^1.0.13",
+    "@playwright/test": "^1.64.1",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "postcss": "^8.5.32",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.5"
+  }
+}

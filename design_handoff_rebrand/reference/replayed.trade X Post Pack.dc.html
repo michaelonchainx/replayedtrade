@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Archivo:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#d9d9d6;-webkit-font-smoothing:antialiased}a{color:oklch(0.5 0.15 145)}a:hover{color:oklch(0.4 0.15 145)}</style>
+</helmet>
+<section style="padding:80px;display:flex;flex-direction:column;gap:48px;font-family:'IBM Plex Mono',monospace;color:#151515">
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div style="font-size:18px;letter-spacing:.08em;text-transform:uppercase;color:#555">replayed.trade — X post pack · Tape × Signal</div>
+    <div style="font-family:'Archivo',sans-serif;font-size:56px;font-weight:900;letter-spacing:-.03em">Profile, header, brand guide + 12 ready-to-post images</div>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:60px;align-items:flex-start">
+    <div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:15px;color:#555">00-brand-guide.png · 1920×1080</div>
+      <div id="ex-brand-guide" style="width:1920px;height:1080px;background:#0a0c0b;color:#e8ede9;font-family:'JetBrains Mono',monospace;padding:80px;box-sizing:border-box;display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:auto 1fr 1fr;gap:56px 72px">
+        <div style="grid-column:1 / 4;display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid #222a24;padding-bottom:32px">
+          <div style="font-family:'Archivo',sans-serif;font-size:96px;font-weight:900;letter-spacing:-.05em;line-height:.9">Brand guide<span style="color:oklch(0.86 0.2 145)">.</span></div>
+          <div style="font-size:22px;color:#7d877f;text-align:right;line-height:1.5">replayed.trade<br>X / social · v1 · Oct 2026</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:24px">
+          <div style="font-size:18px;letter-spacing:.12em;color:#7d877f">01 — LOGO</div>
+          <div style="display:flex;gap:20px">
+            <div style="width:150px;height:150px;background:oklch(0.86 0.2 145);color:#0a0c0b;display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:900;font-size:100px;letter-spacing:-.06em;line-height:1;padding-bottom:12px;box-sizing:border-box">r.</div>
+            <div style="width:150px;height:150px;background:#0a0c0b;border:1px solid #222a24;box-sizing:border-box;color:oklch(0.86 0.2 145);display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:900;font-size:100px;letter-spacing:-.06em;line-height:1;padding-bottom:12px">r.</div>
+          </div>
+          <div style="font-family:'Archivo',sans-serif;font-size:56px;font-weight:900;letter-spacing:-.04em">replayed<span style="color:oklch(0.86 0.2 145)">.trade</span></div>
+          <div style="font-size:18px;color:#9aa39c;line-height:1.6;text-wrap:pretty">Mark “r.” for avatars. Wordmark lowercase, “.trade” in green. Never on light backgrounds.</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:24px">
+          <div style="font-size:18px;letter-spacing:.12em;color:#7d877f">02 — COLOR</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <sc-for list="{{ swatches }}" as="s" hint-placeholder-count="4">
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div style="height:110px;background:{{ s.css }};border:1px solid #222a24"></div>
+                <div style="font-size:18px;font-weight:700">{{ s.name }}</div>
+                <div style="font-size:16px;color:#9aa39c">{{ s.hex }} · {{ s.use }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:24px">
+          <div style="font-size:18px;letter-spacing:.12em;color:#7d877f">03 — TYPE</div>
+          <div style="font-family:'Archivo',sans-serif;font-size:84px;font-weight:900;letter-spacing:-.05em;line-height:.9">+3.1R</div>
+          <div style="font-size:18px;color:#9aa39c">Archivo 900 · tracking −5% · headlines &amp; numbers</div>
+          <div style="font-size:30px;font-weight:700">NQ1! · 5M · {{ tc }}</div>
+          <div style="font-size:18px;color:#9aa39c">JetBrains Mono 400–800 · data, labels, timecodes</div>
+        </div>
+        <div style="grid-column:1 / 4;display:grid;grid-template-columns:1.4fr 1fr;gap:72px;border-top:1px solid #222a24;padding-top:48px">
+          <div style="display:flex;flex-direction:column;gap:20px">
+            <div style="font-size:18px;letter-spacing:.12em;color:#7d877f">04 — THE MOTIF: CHART + PLAYHEAD</div>
+            <div style="flex:1;position:relative;margin-top:16px">
+              <sc-for list="{{ cG }}" as="c" hint-placeholder-count="0"><div style="position:absolute;left:{{ c.cx }};top:{{ c.wt }};height:{{ c.wh }};width:2px;margin-left:-1px;background:{{ c.col }};opacity:{{ c.op }}"></div><div style="position:absolute;left:{{ c.l }};top:{{ c.bt }};height:{{ c.bh }};width:{{ c.w }};background:{{ c.fill }};border:2px solid {{ c.col }};box-sizing:border-box;opacity:{{ c.op }}"></div></sc-for>
+              <div style="position:absolute;top:-16px;bottom:-16px;left:{{ ph }};width:3px;margin-left:-1px;background:oklch(0.86 0.2 145)"><div style="position:absolute;top:0;left:8px;background:oklch(0.86 0.2 145);color:#0a0c0b;font-size:16px;font-weight:800;padding:3px 8px;white-space:nowrap">▶ {{ tc }}</div></div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:18px;font-size:20px;line-height:1.45">
+            <div style="font-size:18px;letter-spacing:.12em;color:#7d877f">05 — RULES</div>
+            <div><span style="color:oklch(0.86 0.2 145)">→</span> Played candles at full strength, future candles ghosted to 16%.</div>
+            <div><span style="color:oklch(0.86 0.2 145)">→</span> Playhead, progress bar and timecode are always green.</div>
+            <div><span style="color:oklch(0.86 0.2 145)">→</span> Red only means down or loss. Never decorative.</div>
+            <div><span style="color:oklch(0.86 0.2 145)">→</span> One huge number per post. Everything else in mono.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:15px;color:#555">logo-mark-green · 512×512</div>
+      <div id="ex-logo-mark-green" style="width:512px;height:512px;background:oklch(0.86 0.2 145);color:#0a0c0b;display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:900;font-size:340px;letter-spacing:-.06em;line-height:1;padding-bottom:40px;box-sizing:border-box">r.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:15px;color:#555">logo-mark-dark · 512×512</div>
+      <div id="ex-logo-mark-dark" style="width:512px;height:512px;background:#0a0c0b;color:oklch(0.86 0.2 145);display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:900;font-size:340px;letter-spacing:-.06em;line-height:1;padding-bottom:40px;box-sizing:border-box">r.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:15px;color:#555">logo-wordmark (transparent) · 1200×240</div>
+      <div style="background:#0a0c0b"><div id="ex-wordmark" style="width:1200px;height:240px;display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:900;font-size:150px;letter-spacing:-.05em;line-height:1;color:#e8ede9;padding-bottom:20px;box-sizing:border-box">replayed<span style="color:oklch(0.86 0.2 145)">.trade</span></div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:15px;color:#555">og-image · 1200×630</div>
+      <div id="ex-og" style="width:1200px;height:630px;background:#0a0c0b;color:#e8ede9;position:relative;overflow:hidden;background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);background-size:50px 50px">
+        <div style="position:absolute;left:64px;right:64px;top:52px;display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:20px;letter-spacing:.1em">
+          <div style="display:flex;gap:12px;align-items:center"><span style="width:14px;height:14px;border-radius:50%;background:oklch(0.66 0.21 27)"></span><span>REPLAY</span></div>
+          <span style="background:oklch(0.86 0.2 145);color:#0a0c0b;font-weight:800;padding:4px 10px">▶ {{ tc }}</span>
+        </div>
+        <div style="position:absolute;left:64px;top:130px;font-family:'Archivo',sans-serif;font-size:110px;font-weight:900;letter-spacing:-.05em;line-height:.9">Your trade.<br><span style="color:oklch(0.86 0.2 145)">As a video.</span></div>
+        <div style="position:absolute;left:64px;right:64px;top:400px;height:120px">
+          <sc-for list="{{ cG }}" as="c" hint-placeholder-count="0"><div style="position:absolute;left:{{ c.cx }};top:{{ c.wt }};height:{{ c.wh }};width:2px;margin-left:-1px;background:{{ c.col }};opacity:{{ c.op }}"></div><div style="position:absolute;left:{{ c.l }};top:{{ c.bt }};height:{{ c.bh }};width:{{ c.w }};background:{{ c.fill }};border:2px solid {{ c.col }};box-sizing:border-box;opacity:{{ c.op }}"></div></sc-for>
+          <div style="position:absolute;top:-16px;bottom:-16px;left:{{ ph }};width:3px;margin-left:-1px;background:oklch(0.86 0.2 145)"></div>
+        </div>
+        <div style="position:absolute;left:64px;right:64px;bottom:44px;display:flex;align-items:center;gap:28px;font-family:'JetBrains Mono',monospace;font-size:22px">
+          <div style="flex:1;height:6px;background:#222a24;position:relative"><div style="position:absolute;left:0;top:0;bottom:0;width:{{ ph }};background:oklch(0.86 0.2 145)"></div></div>
+          <span style="color:oklch(0.86 0.2 145);font-weight:800">replayed.trade</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:15px;color:#555">01-header.png · 1500×500</div>
+      <div id="ex-header" style="width:1500px;height:500px;background:#0a0c0b;color:#e8ede9;position:relative;overflow:hidden;background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);background-size:50px 50px">
+        <div style="position:absolute;left:64px;right:64px;top:40px;display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:18px;letter-spacing:.1em">
+          <div style="display:flex;gap:12px;align-items:center"><span style="width:14px;height:14px;border-radius:50%;background:oklch(0.66 0.21 27)"></span><span>REPLAY</span><span style="color:#7d877f">NQ1! · 5M</span></div>
+          <div style="display:flex;gap:20px;align-items:center"><span style="color:#7d877f">TRADES → VIDEOS</span><span style="background:oklch(0.86 0.2 145);color:#0a0c0b;font-weight:800;padding:4px 10px">▶ {{ tc }}</span></div>
+        </div>
+        <div style="position:absolute;left:560px;right:64px;top:110px;height:150px">
+          <sc-for list="{{ cE }}" as="c" hint-placeholder-count="0"><div style="position:absolute;left:{{ c.cx }};top:{{ c.wt }};height:{{ c.wh }};width:2px;margin-left:-1px;background:{{ c.col }};opacity:{{ c.op }}"></div><div style="position:absolute;left:{{ c.l }};top:{{ c.bt }};height:{{ c.bh }};width:{{ c.w }};background:{{ c.fill }};border:2px solid {{ c.col }};box-sizing:border-box;opacity:{{ c.op }}"></div></sc-for>
+          <div style="position:absolute;top:-20px;bottom:-20px;left:{{ ph }};width:3px;margin-left:-1px;background:oklch(0.86 0.2 145)"></div>
+        </div>
+        <div style="position:absolute;left:52px;bottom:-62px;font-family:'Archivo',sans-serif;font-size:330px;font-weight:900;letter-spacing:-.06em;line-height:1;color:oklch(0.86 0.2 145)">REPLAY</div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:15px;color:#555">02-profile-green.png · 400×400</div>
+      <div id="ex-profile-green" style="width:400px;height:400px;background:oklch(0.86 0.2 145);color:#0a0c0b;display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:900;font-size:260px;letter-spacing:-.06em;line-height:1;padding-bottom:30px;box-sizing:border-box">r.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:15px;color:#555">03-profile-dark.png · 400×400</div>
+      <div id="ex-profile-dark" style="width:400px;height:400px;background:#0a0c0b;color:oklch(0.86 0.2 145);display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:900;font-size:260px;letter-spacing:-.06em;line-height:1;padding-bottom:30px;box-sizing:border-box">r.</div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:15px;color:#555">post-01-launch.png · 1080×1080</div>
+      <div id="ex-post-01-launch" style="width:1080px;height:1080px;background:#0a0c0b;color:#e8ede9;display:flex;flex-direction:column">
+        <div style="height:540px;background:#0a0c0b;border-bottom:1px solid #222a24;position:relative">
+          <div style="position:absolute;left:64px;top:56px;background:oklch(0.86 0.2 145);color:#0a0c0b;font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:800;padding:8px 16px">&gt; NOW LIVE_</div>
+          <div style="position:absolute;right:64px;top:64px;font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:oklch(0.86 0.2 145)">{{ tc }} / 21:00</div>
+          <div style="position:absolute;inset:150px 64px 80px">
+            <sc-for list="{{ cG }}" as="c" hint-placeholder-count="0"><div style="position:absolute;left:{{ c.cx }};top:{{ c.wt }};height:{{ c.wh }};width:2px;margin-left:-1px;background:{{ c.col }};opacity:{{ c.op }}"></div><div style="position:absolute;left:{{ c.l }};top:{{ c.bt }};height:{{ c.bh }};width:{{ c.w }};background:{{ c.fill }};border:2px solid {{ c.col }};box-sizing:border-box;opacity:{{ c.op }}"></div></sc-for>
+            <div style="position:absolute;top:-20px;bottom:-20px;left:{{ ph }};width:4px;margin-left:-2px;background:oklch(0.86 0.2 145)"></div>
+          </div>
+          <div style="position:absolute;left:64px;right:64px;bottom:40px;height:6px;background:#222a24"><div style="position:absolute;left:0;top:0;bottom:0;width:{{ ph }};background:oklch(0.86 0.2 145)"></div></div>
+        </div>
+        <div style="flex:1;padding:56px 64px;display:flex;flex-direction:column;justify-content:space-between">
+          <div style="font-family:'Archivo',sans-serif;font-size:96px;font-weight:900;letter-spacing:-.05em;line-height:.92">Your trade.<br>As a video.<br><span style="color:oklch(0.86 0.2 145)">In seconds.</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:24px"><span style="color:#9aa39c">Upload. Pick a theme. Share.</span><span style="background:oklch(0.86 0.2 145);color:#0a0c0b;font-weight:800;padding:14px 22px">replayed.trade →</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:15px;color:#555">post-02-recap-win.png · 1200×675</div>
+      <div id="ex-post-02-recap-win" style="width:1200px;height:675px;background:#0a0c0b;color:#e8ede9;display:grid;grid-template-columns:600px 1fr">
+        <div style="padding:48px;display:flex;flex-direction:column;justify-content:space-between;font-family:'JetBrains Mono',monospace">
+          <div style="display:flex;gap:12px;font-size:20px;font-weight:800;letter-spacing:.06em"><span style="border:2px solid #e8ede9;padding:4px 12px">NQ1!</span><span style="background:oklch(0.86 0.2 145);color:#0a0c0b;padding:6px 14px">LONG</span></div>
+          <div>
+            <div style="font-family:'Archivo',sans-serif;font-size:190px;font-weight:900;letter-spacing:-.07em;line-height:.85;color:oklch(0.86 0.2 145)">+3.1R</div>
+            <div style="font-size:34px;font-weight:700;margin-top:20px">+$2,480 <span style="color:#7d877f">· 42m</span></div>
+          </div>
+          <div style="display:flex;gap:28px;font-size:18px;color:#7d877f"><span>IN 20,412</span><span>OUT 20,536</span><span style="color:oklch(0.86 0.2 145);font-weight:700;margin-left:auto">replayed.trade</span></div>
+        </div>
+        <div style="border-left:1px solid #222a24;position:relative">
+          <div style="position:absolute;inset:72px 48px 96px">
+            <sc-for list="{{ cG }}" as="c" hint-placeholder-count="0"><div style="position:absolute;left:{{ c.cx }};top:{{ c.wt }};height:{{ c.wh }};width:2px;margin-left:-1px;background:{{ c.col }};opacity:{{ c.op }}"></div><div style="position:absolute;left:{{ c.l }};top:{{ c.bt }};height:{{ c.bh }};width:{{ c.w }};background:{{ c.fill }};border:2px solid {{ c.col }};box-sizing:border-box;opacity:{{ c.op }}"></div></sc-for>
+            <div style="position:absolute;top:-32px;bottom:-20px;left:{{ ph }};width:3px;margin-left:-1px;background:oklch(0.86 0.2 145)"><div style="position:absolute;top:0;left:8px;background:oklch(0.86 0.2 145);color:#0a0c0b;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;padding:3px 8px;white-space:nowrap">▶ {{ tc }}</div></div>
+          </div>
+          <div style="position:absolute;left:48px;right:48px;bottom:44px;height:6px;background:#222a24"><div style="position:absolute;left:0;top:0;bottom:0;width:{{ ph }};background:oklch(0.86 0.2 145)"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:15px;color:#555">post-03-recap-loss.png · 1200×675</div>
+      <div id="ex-post-03-recap-loss" style="width:1200px;height:675px;background:#0a0c0b;color:#e8ede9;display:grid;grid-template-columns:600px 1fr">
+        <div style="padding:48px;display:flex;flex-direction:column;justify-content:space-between;font-family:'JetBrains Mono',monospace">
+          <div style="display:flex;gap:12px;font-size:20px;font-weight:800;letter-spacing:.06em"><span style="border:2px solid #e8ede9;padding:4px 12px">ES1!</span><span style="background:oklch(0.66 0.21 27);color:#0a0c0b;padding:6px 14px">STOPPED</span></div>
+          <div>
+            <div style="font-family:'Archivo',sans-serif;font-size:190px;font-weight:900;letter-spacing:-.07em;line-height:.85;color:oklch(0.66 0.21 27)">−1.0R</div>
+            <div style="font-size:34px;font-weight:700;margin-top:20px">−$640 <span style="color:#7d877f">· 18m</span></div>
+          </div>
+          <div style="display:flex;gap:28px;font-size:18px;color:#7d877f"><span>Losses deserve replays too.</span><span style="color:oklch(0.86 0.2 145);font-weight:700;margin-left:auto">replayed.trade</span></div>
+        </div>
+        <div style="border-left:1px solid #222a24;position:relative">
+          <div style="position:absolute;inset:72px 48px 96px">
+            <sc-for list="{{ cL }}" as="c" hint-placeholder-count="0"><div style="position:absolute;left:{{ c.cx }};top:{{ c.wt }};height:{{ c.wh }};width:2px;margin-left:-1px;background:{{ c.col }};opacity:{{ c.op }}"></div><div style="position:absolute;left:{{ c.l }};top:{{ c.bt }};height:{{ c.bh }};width:{{ c.w }};background:{{ c.fill }};border:2px solid {{ c.col }};box-sizing:border-box;opacity:{{ c.op }}"></div></sc-for>
+            <div style="position:absolute;top:-32px;bottom:-20px;left:{{ ph }};width:3px;margin-left:-1px;background:oklch(0.86 0.2 145)"><div style="position:absolute;top:0;left:8px;background:oklch(0.86 0.2 145);color:#0a0c0b;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;padding:3px 8px;white-space:nowrap">▶ {{ tc }}</div></div>
+          </div>
+          <div style="position:absolute;left:48px;right:48px;bottom:44px;height:6px;background:#222a24"><div style="position:absolute;left:0;top:0;bottom:0;width:{{ ph }};background:oklch(0.86 0.2 145)"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:15px;color:#555">post-04-how-it-works.png · 1080×1080</div>
+      <div id="ex-post-04-how-it-works" style="width:1080px;height:1080px;background:#0a0c0b;color:#e8ede9;padding:72px;box-sizing:border-box;display:flex;flex-direction:column;gap:56px">
+        <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:22px;letter-spacing:.08em;color:#7d877f"><span>HOW IT WORKS</span><span style="color:oklch(0.86 0.2 145)">00:30 TOTAL</span></div>
+        <div style="font-family:'Archivo',sans-serif;font-size:104px;font-weight:900;letter-spacing:-.05em;line-height:.9">Three steps.<br><span style="color:oklch(0.86 0.2 145)">One replay.</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;border-top:1px solid #222a24">
+          <sc-for list="{{ steps }}" as="s" hint-placeholder-count="3">
+            <div style="flex:1;display:grid;grid-template-columns:180px 1fr auto;align-items:center;border-bottom:1px solid #222a24">
+              <div style="font-family:'Archivo',sans-serif;font-size:96px;font-weight:900;letter-spacing:-.06em;color:oklch(0.86 0.2 145)">{{ s.n }}</div>
+              <div style="display:flex;flex-direction:column;gap:8px"><div style="font-family:'Archivo',sans-serif;font-size:44px;font-weight:900;letter-spacing:-.03em">{{ s.t }}</div><div style="font-family:'JetBrains Mono',monospace;font-size:22px;color:#9aa39c">{{ s.d }}</div></div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:20px;color:#7d877f">{{ s.tc }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;justify-content:flex-end;font-family:'JetBrains Mono',monospace;font-size:24px"><span style="background:oklch(0.86 0.2 145);color:#0a0c0b;font-weight:800;padding:14px 22px">replayed.trade →</span></div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:15px;color:#555">post-05-statement.png · 1080×1080</div>
+      <div id="ex-post-05-statement" style="width:1080px;height:1080px;background:#0a0c0b;color:#e8ede9;padding:72px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:22px;letter-spacing:.08em;display:flex;gap:12px;align-items:center"><span style="width:14px;height:14px;border-radius:50%;background:oklch(0.66 0.21 27)"></span>REPLAY</div>
+        <div style="font-family:'Archivo',sans-serif;font-size:118px;font-weight:900;letter-spacing:-.05em;line-height:.9;text-wrap:balance">Screenshots show the result.<br><span style="color:oklch(0.86 0.2 145)">Replays show the trade.</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:24px">
+          <div style="flex:1;height:6px;background:#222a24;position:relative;margin-right:32px"><div style="position:absolute;left:0;top:0;bottom:0;width:{{ ph }};background:oklch(0.86 0.2 145)"></div></div>
+          <span style="color:oklch(0.86 0.2 145);font-weight:800">replayed.trade</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:15px;color:#555">post-06-screenshot-vs-replay.png · 1200×675</div>
+      <div id="ex-post-06-screenshot-vs-replay" style="width:1200px;height:675px;background:#0a0c0b;color:#e8ede9;display:grid;grid-template-columns:1fr 1fr;font-family:'JetBrains Mono',monospace">
+        <div style="padding:48px;display:flex;flex-direction:column;gap:28px;border-right:1px solid #222a24">
+          <div style="font-size:20px;letter-spacing:.1em;color:#7d877f">BEFORE — SCREENSHOT</div>
+          <div style="flex:1;border:2px dashed #3a433c;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#7d877f">
+            <div style="font-family:'Archivo',sans-serif;font-size:96px;font-weight:900;letter-spacing:-.05em;color:#5b645d">+$2,480</div>
+            <div style="font-size:20px">No context. No entry. No story.</div>
+          </div>
+        </div>
+        <div style="padding:48px;display:flex;flex-direction:column;gap:28px">
+          <div style="font-size:20px;letter-spacing:.1em;color:oklch(0.86 0.2 145)">AFTER — REPLAY</div>
+          <div style="flex:1;border:2px solid oklch(0.86 0.2 145);position:relative;display:flex;flex-direction:column">
+            <div style="flex:1;position:relative;margin:28px 28px 16px">
+              <sc-for list="{{ cS }}" as="c" hint-placeholder-count="0"><div style="position:absolute;left:{{ c.cx }};top:{{ c.wt }};height:{{ c.wh }};width:2px;margin-left:-1px;background:{{ c.col }};opacity:{{ c.op }}"></div><div style="position:absolute;left:{{ c.l }};top:{{ c.bt }};height:{{ c.bh }};width:{{ c.w }};background:{{ c.fill }};border:2px solid {{ c.col }};box-sizing:border-box;opacity:{{ c.op }}"></div></sc-for>
+              <div style="position:absolute;top:-10px;bottom:-10px;left:{{ ph }};width:3px;margin-left:-1px;background:oklch(0.86 0.2 145)"></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:16px;padding:0 28px 22px;font-size:18px">
+              <div style="width:0;height:0;border-left:18px solid oklch(0.86 0.2 145);border-top:11px solid transparent;border-bottom:11px solid transparent"></div>
+              <div style="flex:1;height:6px;background:#222a24;position:relative"><div style="position:absolute;left:0;top:0;bottom:0;width:{{ ph }};background:oklch(0.86 0.2 145)"></div></div>
+              <span style="color:#9aa39c">{{ tc }}</span>
+            </div>
+          </div>
+          <div style="font-size:20px;display:flex;justify-content:space-between"><span style="color:#9aa39c">Every candle. Every decision.</span><span style="color:oklch(0.86 0.2 145);font-weight:700">replayed.trade</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:15px;color:#555">post-07-engagement.png · 1080×1080</div>
+      <div id="ex-post-07-engagement" style="width:1080px;height:1080px;background:#0a0c0b;color:#e8ede9;padding:72px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between">
+        <div style="align-self:flex-start;background:oklch(0.86 0.2 145);color:#0a0c0b;font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:800;padding:8px 16px">QUESTION OF THE WEEK</div>
+        <div style="font-family:'Archivo',sans-serif;font-size:132px;font-weight:900;letter-spacing:-.06em;line-height:.88">What was your best trade this week<span style="color:oklch(0.86 0.2 145)">?</span></div>
+        <div style="display:flex;flex-direction:column;gap:28px;font-family:'JetBrains Mono',monospace">
+          <div style="font-size:30px;font-weight:700">Reply with ticker + R ↓</div>
+          <div style="font-size:24px;color:#9aa39c;border-top:1px solid #222a24;padding-top:28px;display:flex;justify-content:space-between"><span>We replay the best ones.</span><span style="color:oklch(0.86 0.2 145);font-weight:800">replayed.trade</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:15px;color:#555">post-08-formats.png · 1080×1080</div>
+      <div id="ex-post-08-formats" style="width:1080px;height:1080px;background:#0a0c0b;color:#e8ede9;padding:72px;box-sizing:border-box;display:flex;flex-direction:column;gap:56px">
+        <div style="font-family:'Archivo',sans-serif;font-size:110px;font-weight:900;letter-spacing:-.05em;line-height:.9">One trade.<br><span style="color:oklch(0.86 0.2 145)">Every format.</span></div>
+        <div style="flex:1;display:flex;gap:32px;align-items:flex-end">
+          <div style="display:flex;flex-direction:column;gap:14px"><div style="width:420px;height:236px;border:2px solid oklch(0.86 0.2 145);position:relative"><div style="position:absolute;inset:24px"><sc-for list="{{ cS }}" as="c" hint-placeholder-count="0"><div style="position:absolute;left:{{ c.cx }};top:{{ c.wt }};height:{{ c.wh }};width:2px;margin-left:-1px;background:{{ c.col }};opacity:{{ c.op }}"></div><div style="position:absolute;left:{{ c.l }};top:{{ c.bt }};height:{{ c.bh }};width:{{ c.w }};background:{{ c.fill }};border:2px solid {{ c.col }};box-sizing:border-box;opacity:{{ c.op }}"></div></sc-for></div></div><div style="font-family:'JetBrains Mono',monospace;font-size:22px;color:#9aa39c">16:9 · X, YouTube</div></div>
+          <div style="display:flex;flex-direction:column;gap:14px"><div style="width:236px;height:236px;border:2px solid oklch(0.86 0.2 145);position:relative"><div style="position:absolute;inset:20px"><sc-for list="{{ cS }}" as="c" hint-placeholder-count="0"><div style="position:absolute;left:{{ c.cx }};top:{{ c.wt }};height:{{ c.wh }};width:2px;margin-left:-1px;background:{{ c.col }};opacity:{{ c.op }}"></div><div style="position:absolute;left:{{ c.l }};top:{{ c.bt }};height:{{ c.bh }};width:{{ c.w }};background:{{ c.fill }};border:2px solid {{ c.col }};box-sizing:border-box;opacity:{{ c.op }}"></div></sc-for></div></div><div style="font-family:'JetBrains Mono',monospace;font-size:22px;color:#9aa39c">1:1 · feed</div></div>
+          <div style="display:flex;flex-direction:column;gap:14px"><div style="width:206px;height:366px;border:2px solid oklch(0.86 0.2 145);position:relative"><div style="position:absolute;inset:60px 18px"><sc-for list="{{ cS }}" as="c" hint-placeholder-count="0"><div style="position:absolute;left:{{ c.cx }};top:{{ c.wt }};height:{{ c.wh }};width:2px;margin-left:-1px;background:{{ c.col }};opacity:{{ c.op }}"></div><div style="position:absolute;left:{{ c.l }};top:{{ c.bt }};height:{{ c.bh }};width:{{ c.w }};background:{{ c.fill }};border:2px solid {{ c.col }};box-sizing:border-box;opacity:{{ c.op }}"></div></sc-for></div></div><div style="font-family:'JetBrains Mono',monospace;font-size:22px;color:#9aa39c">9:16 · stories</div></div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;font-family:'JetBrains Mono',monospace;font-size:24px"><span style="color:oklch(0.86 0.2 145);font-weight:800">replayed.trade</span></div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:15px;color:#555">post-09-thread-cover.png · 1200×675</div>
+      <div id="ex-post-09-thread-cover" style="width:1200px;height:675px;background:#0a0c0b;color:#e8ede9;padding:56px 64px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden">
+        <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:20px;letter-spacing:.1em"><span style="background:oklch(0.86 0.2 145);color:#0a0c0b;font-weight:800;padding:6px 12px">THREAD ↓</span><span style="color:#7d877f">1 / 7</span></div>
+        <div style="font-family:'Archivo',sans-serif;font-size:104px;font-weight:900;letter-spacing:-.05em;line-height:.9;max-width:960px">How to review a trade in <span style="color:oklch(0.86 0.2 145)">5 minutes.</span></div>
+        <div style="display:flex;align-items:center;gap:28px;font-family:'JetBrains Mono',monospace;font-size:20px">
+          <span style="color:#9aa39c">00:00</span>
+          <div style="flex:1;height:6px;background:#222a24;position:relative"><div style="position:absolute;left:0;top:0;bottom:0;width:14%;background:oklch(0.86 0.2 145)"></div></div>
+          <span style="color:#9aa39c">05:00</span>
+          <span style="color:oklch(0.86 0.2 145);font-weight:800">replayed.trade</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:15px;color:#555">post-10-countdown.png · 1080×1080</div>
+      <div id="ex-post-10-countdown" style="width:1080px;height:1080px;background:#0a0c0b;color:#e8ede9;padding:72px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden">
+        <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:22px;letter-spacing:.08em"><span style="display:flex;gap:12px;align-items:center"><span style="width:14px;height:14px;border-radius:50%;background:oklch(0.66 0.21 27)"></span>T-MINUS</span><span style="color:#7d877f">LAUNCH</span></div>
+        <div style="display:flex;flex-direction:column">
+          <div style="font-family:'Archivo',sans-serif;font-size:520px;font-weight:900;letter-spacing:-.08em;line-height:.8;color:oklch(0.86 0.2 145);margin-left:-20px">3</div>
+          <div style="font-family:'Archivo',sans-serif;font-size:96px;font-weight:900;letter-spacing:-.05em;line-height:.9;margin-top:24px">days until your trades start moving.</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:24px;color:#9aa39c"><span>Join the waitlist</span><span style="color:oklch(0.86 0.2 145);font-weight:800">replayed.trade</span></div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:15px;color:#555">post-11-trade-of-the-week.png · 1080×1080</div>
+      <div id="ex-post-11-trade-of-the-week" style="width:1080px;height:1080px;background:#0a0c0b;color:#e8ede9;padding:72px;box-sizing:border-box;display:flex;flex-direction:column;gap:40px;font-family:'JetBrains Mono',monospace">
+        <div style="display:flex;justify-content:space-between;align-items:center"><span style="background:oklch(0.86 0.2 145);color:#0a0c0b;font-size:24px;font-weight:800;padding:8px 16px">TRADE OF THE WEEK</span><span style="font-size:22px;color:#7d877f">WK 44</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end">
+          <div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:28px;color:#9aa39c">@yourhandle</div><div style="font-size:30px;font-weight:700">BTCUSD · LONG · 15M</div></div>
+          <div style="font-family:'Archivo',sans-serif;font-size:160px;font-weight:900;letter-spacing:-.07em;line-height:.85;color:oklch(0.86 0.2 145)">+5.4R</div>
+        </div>
+        <div style="flex:1;border:1px solid #222a24;position:relative">
+          <div style="position:absolute;inset:40px 36px 60px">
+            <sc-for list="{{ cG }}" as="c" hint-placeholder-count="0"><div style="position:absolute;left:{{ c.cx }};top:{{ c.wt }};height:{{ c.wh }};width:2px;margin-left:-1px;background:{{ c.col }};opacity:{{ c.op }}"></div><div style="position:absolute;left:{{ c.l }};top:{{ c.bt }};height:{{ c.bh }};width:{{ c.w }};background:{{ c.fill }};border:2px solid {{ c.col }};box-sizing:border-box;opacity:{{ c.op }}"></div></sc-for>
+            <div style="position:absolute;top:-16px;bottom:-16px;left:{{ ph }};width:3px;margin-left:-1px;background:oklch(0.86 0.2 145)"></div>
+          </div>
+          <div style="position:absolute;left:36px;right:36px;bottom:28px;height:6px;background:#222a24"><div style="position:absolute;left:0;top:0;bottom:0;width:{{ ph }};background:oklch(0.86 0.2 145)"></div></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:24px;color:#9aa39c"><span>Tag us to get featured</span><span style="color:oklch(0.86 0.2 145);font-weight:800">replayed.trade</span></div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:15px;color:#555">post-12-cta.png · 1080×1080</div>
+      <div id="ex-post-12-cta" style="width:1080px;height:1080px;background:oklch(0.86 0.2 145);color:#0a0c0b;padding:72px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:800;letter-spacing:.06em">&gt; STOP_</div>
+        <div style="font-family:'Archivo',sans-serif;font-size:150px;font-weight:900;letter-spacing:-.06em;line-height:.86">Stop posting screen&shy;shots.</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:26px"><span style="font-weight:700">Post the replay.</span><span style="background:#0a0c0b;color:oklch(0.86 0.2 145);font-weight:800;padding:16px 24px">replayed.trade →</span></div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:15px;color:#555">post-13-week-recap.png · 1200×675</div>
+      <div id="ex-post-13-week-recap" style="width:1200px;height:675px;background:#0a0c0b;color:#e8ede9;padding:56px 64px;box-sizing:border-box;display:flex;flex-direction:column;gap:32px;font-family:'JetBrains Mono',monospace">
+        <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:22px;letter-spacing:.1em">WEEK RECAP · OCT 20–24</span><span style="font-size:22px;color:oklch(0.86 0.2 145);font-weight:800">replayed.trade</span></div>
+        <div style="flex:1;display:grid;grid-template-columns:repeat(5,1fr);gap:16px;align-items:end">
+          <sc-for list="{{ week }}" as="d" hint-placeholder-count="5">
+            <div style="display:flex;flex-direction:column;gap:14px;height:100%;justify-content:flex-end">
+              <div style="font-family:'Archivo',sans-serif;font-size:44px;font-weight:900;letter-spacing:-.04em;color:{{ d.col }}">{{ d.r }}</div>
+              <div style="height:{{ d.h }};background:{{ d.col }}"></div>
+              <div style="font-size:20px;color:#7d877f;border-top:1px solid #222a24;padding-top:12px">{{ d.day }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid #222a24;padding-top:24px"><span style="font-size:22px;color:#9aa39c">5 days · 11 trades · 64% win</span><span style="font-family:'Archivo',sans-serif;font-size:64px;font-weight:900;letter-spacing:-.05em;color:oklch(0.86 0.2 145)">+6.8R</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;replayProgress&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.68,&quot;min&quot;:0.15,&quot;max&quot;:1,&quot;step&quot;:0.01,&quot;tsType&quot;:&quot;number&quot;}}">
+class Component extends DCLogic {
+  data(n, seed, bias) {
+    let s = seed;
+    const r = () => { s = (s * 9301 + 49297) % 233280; return s / 233280; };
+    let p = 100; const out = [];
+    for (let i = 0; i < n; i++) {
+      const o = p, c = o + (r() - bias) * 4;
+      out.push({ o, c, h: Math.max(o, c) + r() * 1.8, l: Math.min(o, c) - r() * 1.8 });
+      p = c;
+    }
+    const mx = Math.max(...out.map(d => d.h)), mn = Math.min(...out.map(d => d.l));
+    const y = v => (mx - v) / (mx - mn) * 100;
+    return out.map((d, i) => ({
+      up: d.c >= d.o, i, n,
+      cx: ((i + 0.5) / n * 100) + '%', l: (i / n * 100 + 20 / n) + '%', w: (60 / n) + '%',
+      wt: y(d.h) + '%', wh: (y(d.l) - y(d.h)) + '%',
+      bt: y(Math.max(d.o, d.c)) + '%', bh: Math.max(y(Math.min(d.o, d.c)) - y(Math.max(d.o, d.c)), 0.6) + '%'
+    }));
+  }
+  theme(base, prog, up, down, ghost) {
+    return base.map(c => ({ ...c, col: c.up ? up : down, fill: c.up ? up : down, op: (c.i + 0.5) / c.n <= prog ? 1 : ghost }));
+  }
+  hex(L, C, h) {
+    const a = C * Math.cos(h * Math.PI / 180), b = C * Math.sin(h * Math.PI / 180);
+    const l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3, m = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3, s = (L - 0.0894841775 * a - 1.291485548 * b) ** 3;
+    const rgb = [4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s, -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s, -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s];
+    return '#' + rgb.map(x => { x = Math.min(1, Math.max(0, x)); x = x <= 0.0031308 ? 12.92 * x : 1.055 * x ** (1 / 2.4) - 0.055; return Math.round(x * 255).toString(16).padStart(2, '0'); }).join('').toUpperCase();
+  }
+  renderVals() {
+    const prog = this.props.replayProgress ?? 0.68;
+    const G = 'oklch(0.86 0.2 145)', R = 'oklch(0.66 0.21 27)';
+    const secs = Math.round(prog * 1260);
+    const tc = String(Math.floor(secs / 60)).padStart(2, '0') + ':' + String(secs % 60).padStart(2, '0');
+    const base = this.data(44, 7, 0.4);
+    return {
+      ph: (prog * 100) + '%', tc,
+      cE: this.theme(base, prog, G, R, 0.16),
+      cG: this.theme(base, prog, G, R, 0.16),
+      cL: this.theme(this.data(44, 11, 0.6), prog, G, R, 0.16),
+      cS: this.theme(this.data(24, 3, 0.38), prog, G, R, 0.16),
+      swatches: [
+        { name: 'Tape Black', css: '#0a0c0b', hex: '#0A0C0B', use: 'background' },
+        { name: 'Phosphor', css: G, hex: this.hex(0.86, 0.2, 145), use: 'brand / up' },
+        { name: 'Paper', css: '#e8ede9', hex: '#E8EDE9', use: 'text' },
+        { name: 'Stop Red', css: R, hex: this.hex(0.66, 0.21, 27), use: 'down / loss' }
+      ],
+      steps: [
+        { n: '01', t: 'Add your trade', d: 'Ticker, entry, exit, timeframe.', tc: '00:10' },
+        { n: '02', t: 'Pick a theme', d: 'Style, format, length.', tc: '00:20' },
+        { n: '03', t: 'Export & post', d: 'A video, ready for your feed.', tc: '00:30' }
+      ],
+      week: [
+        { day: 'MON', r: '+2.1R', h: '62%', col: G },
+        { day: 'TUE', r: '−1.0R', h: '30%', col: R },
+        { day: 'WED', r: '+3.1R', h: '92%', col: G },
+        { day: 'THU', r: '+0.6R', h: '18%', col: G },
+        { day: 'FRI', r: '+2.0R', h: '59%', col: G }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+@import 'tailwindcss';
+
+/* replayed.trade brand tokens ("Tape × Signal") — see design_handoff_rebrand/tokens.css */
+@theme {
+  --color-bg: #0a0c0b;
+  --color-panel: #111513;
+  --color-panel-2: #161b18;
+  --color-line: #222a24;
+  --color-green: #6ef278;
+  --color-red: #f84c45;
+  --color-ink: #e8ede9;
+  --color-ink-2: #9aa39c;
+  --color-ink-3: #7d877f;
+  --color-muted: #9aa39c;
+  --color-label: #b9c1bb;
+  --color-on-pill: #0a0c0b;
+  --font-sans: var(--font-mono), 'JetBrains Mono', ui-monospace, monospace;
+  --font-mono: var(--font-mono), 'JetBrains Mono', ui-monospace, monospace;
+  --font-display: var(--font-display), 'Archivo', system-ui, sans-serif;
+  --radius-none: 0px;
+}
+
+html,
+body {
+  background: #0a0c0b;
+  color: #e8ede9;
+}
+
+/* Square everything (brand: radius 0). */
+*,
+*::before,
+*::after {
+  border-radius: 0 !important;
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+.display {
+  font-family: var(--font-display), 'Archivo', sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+}
+
+.kicker {
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #7d877f;
+}
+
+.rt-grid-bg {
+  background-color: #0a0c0b;
+  background-image: linear-gradient(#ffffff08 1px, transparent 1px), linear-gradient(90deg, #ffffff08 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+:focus-visible {
+  outline: 2px solid #6ef278;
+  outline-offset: 2px;
+}
+
+.field {
+  width: 100%;
+  border: 1px solid #222a24;
+  background: #111513;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: #e8ede9;
+  font-variant-numeric: tabular-nums;
+}
+.field::placeholder {
+  color: #7d877f;
+}
+.field:focus {
+  outline: none;
+  border-color: #6ef278;
+  box-shadow: 0 0 0 1px #6ef278;
+}
+.field[aria-invalid='true'] {
+  border-color: #f84c45;
+}
+.field:disabled {
+  opacity: 0.55;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.btn-primary {
+  background: #6ef278;
+  color: #0a0c0b;
+  font-weight: 800;
+}
+.btn-primary:hover:not(:disabled) {
+  background: #e8ede9;
+}
+.btn-ghost {
+  border: 2px solid #e8ede9;
+  color: #e8ede9;
+  background: transparent;
+}
+.btn-ghost:hover:not(:disabled) {
+  border-color: #6ef278;
+  color: #6ef278;
+}
+.btn-quiet {
+  border: 1px solid #222a24;
+  color: #9aa39c;
+  background: #111513;
+}
+.btn-quiet:hover:not(:disabled) {
+  color: #e8ede9;
+  border-color: #7d877f;
+}
+
+.label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #7d877f;
+  margin-bottom: 8px;
+}
+
+@layer base {
+  a {
+    color: #6ef278;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #111513, #1a201c, #111513);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+}
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes shake {
+  10%,
+  90% {
+    transform: translate(-50%, 0) translateX(-2px);
+  }
+  20%,
+  80% {
+    transform: translate(-50%, 0) translateX(4px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translate(-50%, 0) translateX(-6px);
+  }
+  40%,
+  60% {
+    transform: translate(-50%, 0) translateX(6px);
+  }
+}
+.shake {
+  animation: shake 0.45s;
+}
+
+@keyframes rec-blink {
+  50% {
+    opacity: 0.15;
+  }
+}
+.rec-dot {
+  animation: rec-blink 1s steps(1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton,
+  .shake,
+  .rec-dot {
+    animation: none;
+  }
+}

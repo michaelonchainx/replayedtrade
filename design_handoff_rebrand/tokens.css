@@ -1,0 +1,40 @@
+/* replayed.trade — brand tokens (Tape × Signal) */
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=JetBrains+Mono:wght@400;500;700;800&display=swap');
+
+:root {
+  /* Color */
+  --rt-bg:        #0A0C0B;  /* Tape Black — page background */
+  --rt-surface:   #111513;  /* raised surface (cards, inputs) */
+  --rt-line:      #222A24;  /* borders, dividers, progress track */
+  --rt-ink:       #E8EDE9;  /* Paper — primary text */
+  --rt-ink-2:     #9AA39C;  /* secondary text */
+  --rt-ink-3:     #7D877F;  /* labels, meta */
+  --rt-green:     #6EF278;  /* Phosphor — brand, up, playhead, primary CTA  (oklch(0.86 0.2 145)) */
+  --rt-red:       #F84C45;  /* Stop Red — down / loss ONLY                 (oklch(0.66 0.21 27)) */
+  --rt-on-green:  #0A0C0B;  /* text on green */
+  --rt-ghost:     0.16;     /* opacity for "future" (unplayed) candles */
+
+  /* Type */
+  --rt-font-display: 'Archivo', system-ui, sans-serif;      /* weight 900, letter-spacing -0.05em */
+  --rt-font-mono:    'JetBrains Mono', ui-monospace, monospace;
+
+  --rt-text-hero:  clamp(56px, 9vw, 140px); /* line-height .9, tracking -0.05em */
+  --rt-text-h1:    clamp(40px, 6vw, 96px);  /* line-height .92, tracking -0.05em */
+  --rt-text-h2:    clamp(28px, 3.5vw, 48px);/* line-height 1, tracking -0.03em */
+  --rt-text-body:  18px;                    /* mono, line-height 1.6 */
+  --rt-text-label: 14px;                    /* mono, uppercase, tracking 0.1em */
+
+  /* Shape & spacing */
+  --rt-radius: 0px;           /* square everything; only exception: none */
+  --rt-grid: 50px;            /* background grid size */
+  --rt-space: 8px;            /* base unit: 8 / 16 / 24 / 32 / 48 / 64 / 72 */
+}
+
+/* Background grid used on hero areas */
+.rt-grid-bg {
+  background-color: var(--rt-bg);
+  background-image:
+    linear-gradient(#ffffff08 1px, transparent 1px),
+    linear-gradient(90deg, #ffffff08 1px, transparent 1px);
+  background-size: var(--rt-grid) var(--rt-grid);
+}

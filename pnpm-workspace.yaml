@@ -1,0 +1,5 @@
+allowBuilds:
+  esbuild: true
+  sharp: true
+  "@napi-rs/canvas": true
+  unrs-resolver: true
