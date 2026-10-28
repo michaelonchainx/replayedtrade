@@ -5,6 +5,7 @@ import { createScene, ensureCanvasFonts } from '@/lib/render/scene';
 import { renderFrame } from '@/lib/render/renderFrame';
 import type { SceneTimeline } from '@/lib/render/timeline';
 import { Rec } from '../ui';
+import { crossedEvents, KachingPlayer } from '@/lib/audio/player';
 
 const tc = (s: number) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
 
@@ -25,6 +26,21 @@ export default function ReplayPlayer() {
   const [frame, setFrame] = useState(0);
   const [frames, setFrames] = useState(1);
   const [renderError, setRenderError] = useState<string | null>(null);
+  // browsers block audio until a click, so preview sound starts muted
+  const [soundOn, setSoundOn] = useState(false);
+  const audioRef = useRef<KachingPlayer | null>(null);
+  const soundRef = useRef(false);
+  soundRef.current = soundOn && options.sound;
+
+  useEffect(() => () => audioRef.current?.close(), []);
+
+  const toggleSound = async () => {
+    if (!soundOn) {
+      if (!audioRef.current) audioRef.current = new KachingPlayer();
+      await audioRef.current.resume();
+    }
+    setSoundOn((v) => !v);
+  };
 
   useEffect(() => {
     let alive = true;
@@ -64,7 +80,11 @@ export default function ReplayPlayer() {
         const step = Math.floor(acc * s.tl.fps);
         if (step > 0) {
           acc -= step / s.tl.fps;
+          const from = frameRef.current;
           frameRef.current = (frameRef.current + step) % s.tl.frames;
+          if (soundRef.current && audioRef.current) {
+            for (const idx of crossedEvents(s.tl.fills, from, frameRef.current)) audioRef.current.play(s.tl.fills[idx].kind, idx, s.tl.fills.length);
+          }
           renderFrame(s.ctx, s.tl, frameRef.current);
           setFrame(frameRef.current);
         }
@@ -118,6 +138,25 @@ export default function ReplayPlayer() {
               <path d="M3 1.5v11l9.5-5.5z" fill="currentColor" />
             </svg>
           )}
+        </button>
+        <button
+          type="button"
+          className={`btn h-10 w-10 !p-0 ${soundOn && options.sound ? 'btn-primary' : 'btn-quiet'}`}
+          onClick={toggleSound}
+          disabled={!options.sound}
+          aria-label={soundOn ? 'Mute preview' : 'Unmute preview'}
+          aria-pressed={soundOn}
+          title={options.sound ? (soundOn ? 'Mute ka-chings' : 'Hear the ka-chings') : 'Sound is off for this video'}
+          data-testid="sound-toggle"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden>
+            <path d="M2 6h3l4-3.5v11L5 10H2z" fill="currentColor" />
+            {soundOn && options.sound ? (
+              <path d="M11 5.5c1 .8 1.5 1.6 1.5 2.5s-.5 1.7-1.5 2.5M12.8 3.5c1.6 1.2 2.4 2.7 2.4 4.5s-.8 3.3-2.4 4.5" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="square" />
+            ) : (
+              <path d="M11 5.5l4 5M15 5.5l-4 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square" />
+            )}
+          </svg>
         </button>
         {/* brand progress bar: 6px track, green fill — the native range sits on top for input */}
         <div className="relative h-6 flex-1">

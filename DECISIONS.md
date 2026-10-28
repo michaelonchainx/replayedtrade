@@ -1,5 +1,16 @@
 # Decisions & deviations
 
+## Ka-ching sounds
+
+- Every execution gets a cash-register sound:
+  - entries and adds: a bright "ching"
+  - partial exits: the full "ka-ching" (register clunk + bell)
+  - the final close: a bigger ka-ching with coin rattle and a longer ring
+- **Synthesized in code** (`lib/audio/kaching.ts`): inharmonic, slightly detuned bell partials, a filtered-noise "ka", and seeded coin ticks. No samples to license, and output is deterministic, so preview and export are identical.
+- **MP4:** a mono 48 kHz AAC-LC track (128 kbps) aligned to the exact execution frames, fed in 1 s chunks interleaved with the video. Native WebCodecs AAC is used where available, otherwise `@mediabunny/aac-encoder` (WASM), loaded on demand.
+- **Preview:** Web Audio plays the same buffers when the playhead crosses an execution. It starts muted because browsers block audio until a click; the speaker button next to play/pause turns it on.
+- **"Ka-ching on entries & exits" toggle** (on by default) removes the audio track entirely for silent videos. Share links carry it.
+
 ## PnL end card
 
 - The video ends on a dedicated result card.

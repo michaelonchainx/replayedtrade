@@ -142,6 +142,7 @@ export default function Customize() {
         <Toggle label="Show leverage" checked={options.showLeverage} onChange={(v) => set({ showLeverage: v })} />
         <Toggle label="Show position size" checked={options.showSize} onChange={(v) => set({ showSize: v })} />
         <Toggle label="% only (hide $)" checked={options.percentOnly} onChange={(v) => set({ percentOnly: v })} testId="percent-only" />
+        <Toggle label="Ka-ching on entries & exits" checked={options.sound} onChange={(v) => set({ sound: v })} testId="sound-option" />
       </div>
     </div>
   );

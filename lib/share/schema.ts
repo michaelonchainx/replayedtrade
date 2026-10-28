@@ -26,6 +26,7 @@ export const OptionsSchema = z.object({
   showLeverage: z.boolean(),
   showSize: z.boolean(),
   percentOnly: z.boolean(),
+  sound: z.boolean().default(true),
   length: z.union([z.literal(15), z.literal(25), z.literal(40)]),
   format: z.enum(['16x9', '9x16']),
 });

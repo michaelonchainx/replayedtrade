@@ -53,6 +53,8 @@ export interface RenderOptions {
   showLeverage: boolean;
   showSize: boolean;
   percentOnly: boolean;
+  /** ka-ching on every entry/exit (preview + MP4 audio track) */
+  sound: boolean;
   length: VideoLength;
   format: VideoFormat;
 }
@@ -63,6 +65,7 @@ export const DEFAULT_OPTIONS: RenderOptions = {
   showLeverage: true,
   showSize: false,
   percentOnly: false,
+  sound: true,
   length: 25,
   format: '16x9',
 };
