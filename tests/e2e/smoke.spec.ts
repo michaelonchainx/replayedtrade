@@ -16,7 +16,7 @@ test('demo replay plays and exports a valid MP4', async ({ page }) => {
   await page.getByTestId('preview-canvas').screenshot({ path: 'tmp/preview-final.png' });
 
   const [download] = await Promise.all([page.waitForEvent('download', { timeout: 120_000 }), page.getByTestId('download-mp4').click()]);
-  expect(download.suggestedFilename()).toMatch(/^replayed-HYPE-michaelonchainx-\d{8}\.mp4$/);
+  expect(download.suggestedFilename()).toMatch(/^replayed-HYPE-replayedtrade-\d{8}\.mp4$/);
   await download.saveAs('tmp/export.mp4');
   expect(fs.statSync('tmp/export.mp4').size).toBeGreaterThan(100_000);
   expect(errors).toEqual([]);

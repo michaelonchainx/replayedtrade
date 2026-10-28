@@ -58,7 +58,7 @@ export interface RenderOptions {
 }
 
 export const DEFAULT_OPTIONS: RenderOptions = {
-  username: 'michaelonchainx',
+  username: 'replayedtrade',
   footer: '',
   showLeverage: true,
   showSize: false,

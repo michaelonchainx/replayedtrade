@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://replayed-trade.vercel.app"><img src="docs/media/banner.png" alt="replayed.trade — Your trade. As a video." width="100%" /></a>
+  <a href="https://replayed.trade"><img src="docs/media/banner.png" alt="replayed.trade — Your trade. As a video." width="100%" /></a>
 </p>
 
 <p align="center">
@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  <a href="https://replayed-trade.vercel.app"><img alt="Live" src="https://img.shields.io/badge/live-replayed--trade.vercel.app-6EF278?style=flat-square&labelColor=0A0C0B" /></a>
+  <a href="https://replayed.trade"><img alt="Live" src="https://img.shields.io/badge/live-replayed.trade-6EF278?style=flat-square&labelColor=0A0C0B" /></a>
   <img alt="Next.js 15" src="https://img.shields.io/badge/Next.js-15-E8EDE9?style=flat-square&labelColor=0A0C0B&logo=nextdotjs" />
   <img alt="TypeScript strict" src="https://img.shields.io/badge/TypeScript-strict-E8EDE9?style=flat-square&labelColor=0A0C0B&logo=typescript" />
   <img alt="WebCodecs" src="https://img.shields.io/badge/export-WebCodecs%20·%20H.264-E8EDE9?style=flat-square&labelColor=0A0C0B" />

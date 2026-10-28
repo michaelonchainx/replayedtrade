@@ -89,7 +89,7 @@ export default function Customize() {
               value={name}
               onChange={(e) => onName(e.target.value)}
               maxLength={21}
-              placeholder="michaelonchainx"
+              placeholder="replayedtrade"
               aria-label="X handle"
               aria-invalid={name.length === 0}
               autoComplete="off"
@@ -134,7 +134,7 @@ export default function Customize() {
         <label className="label" htmlFor="footer">
           Footer line <span className="normal-case tracking-normal text-ink-3/70">(optional)</span>
         </label>
-        <input id="footer" className="field" value={options.footer} maxLength={40} onChange={(e) => set({ footer: e.target.value.slice(0, 40) })} placeholder="Code MICHAEL · link in bio" />
+        <input id="footer" className="field" value={options.footer} maxLength={40} onChange={(e) => set({ footer: e.target.value.slice(0, 40) })} placeholder="Code REPLAYED · link in bio" />
         <p className="mt-3 text-xs text-ink-3">Shown under your handle. Max 40 characters.</p>
       </div>
 
