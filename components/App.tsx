@@ -251,6 +251,21 @@ export default function App() {
               </svg>
               github.com/michaelonchainx/replayedtrade
             </a>
+            {['replayedtrade', 'michaelonchainx'].map((handle) => (
+              <a
+                key={handle}
+                href={`https://x.com/${handle}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 font-bold text-green hover:text-ink hover:no-underline"
+                data-testid={`x-link-${handle}`}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
+                @{handle}
+              </a>
+            ))}
           </div>
           <p>Not financial advice. Not affiliated with Hyperliquid or Lighter. Videos are rendered in your browser — nothing is uploaded.</p>
         </div>
