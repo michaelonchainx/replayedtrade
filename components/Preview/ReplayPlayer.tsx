@@ -17,6 +17,7 @@ export default function ReplayPlayer() {
   const avatar = useApp((s) => s.avatar);
   const loading = useApp((s) => s.candlesLoading);
   const candleError = useApp((s) => s.candleError);
+  const replayNonce = useApp((s) => s.replayNonce);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<{ tl: SceneTimeline; ctx: CanvasRenderingContext2D } | null>(null);
@@ -83,7 +84,7 @@ export default function ReplayPlayer() {
           const from = frameRef.current;
           frameRef.current = (frameRef.current + step) % s.tl.frames;
           if (soundRef.current && audioRef.current) {
-            for (const idx of crossedEvents(s.tl.fills, from, frameRef.current)) audioRef.current.play(s.tl.fills[idx].kind, idx, s.tl.fills.length);
+            for (const idx of crossedEvents(s.tl.sounds, from, frameRef.current)) audioRef.current.play(s.tl.sounds[idx].kind);
           }
           renderFrame(s.ctx, s.tl, frameRef.current);
           setFrame(frameRef.current);
@@ -95,6 +96,16 @@ export default function ReplayPlayer() {
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [playing]);
+
+  // "replay from the start" requests (wallet bar): jump to 0:00 and play
+  useEffect(() => {
+    if (!replayNonce) return;
+    const s = sceneRef.current;
+    frameRef.current = 0;
+    setFrame(0);
+    if (s) renderFrame(s.ctx, s.tl, 0);
+    setPlaying(true);
+  }, [replayNonce]);
 
   const scrub = (v: number) => {
     const s = sceneRef.current;

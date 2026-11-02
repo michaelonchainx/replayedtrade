@@ -2,7 +2,7 @@ import { formatClock, formatDuration, formatLeverage, formatPct, formatPx, forma
 import { positionUsd } from '../pnl';
 import { BG_COLOR } from './background';
 import { drawIdenticon } from './identicon';
-import type { FillEvent, SceneTimeline } from './timeline';
+import type { MarkerGroup, SceneTimeline } from './timeline';
 
 /** Brand tokens ("Tape × Signal"). Red only ever means down / loss. */
 export const COLORS = {
@@ -130,15 +130,26 @@ function heroSize(ctx: Ctx, tl: SceneTimeline, text: (v: number, r: number) => s
   return size;
 }
 
-function fillLabel(ev: FillEvent, idx: number, all: FillEvent[], tl: SceneTimeline): { icon: Icon; text: string; final: boolean } {
+/** How many of a marker group's executions have happened by frame i. */
+function executedIn(g: MarkerGroup, tl: SceneTimeline, i: number): number {
+  let n = 0;
+  for (const idx of g.members) if (tl.fills[idx].frame <= i) n++;
+  return n;
+}
+
+function groupLabel(g: MarkerGroup, tl: SceneTimeline, i: number): { icon: Icon; text: string; final: boolean } {
   const { trade } = tl;
   const dec = trade.pxDecimals;
   const side = trade.side === 'long' ? 'LONG' : 'SHORT';
-  if (idx === 0) return { icon: 'play', text: `${side} OPENED · ${formatPx(ev.px, dec)}`, final: false };
-  if (idx === all.length - 1) return { icon: 'stop', text: `CLOSED · ${tl.options.percentOnly ? formatPct(tl.finalReturn) : formatPnl(tl.finalPnl)}`, final: true };
-  if (ev.kind === 'in') return { icon: 'plus', text: `ADDED · ${formatPx(ev.px, dec)}`, final: false };
-  const pct = ev.before > 0 ? Math.round(((ev.before - ev.after) / ev.before) * 100) : 100;
-  return { icon: 'minus', text: `TRIMMED ${pct}% · ${formatPx(ev.px, dec)}`, final: false };
+  const first = tl.fills[g.members[0]];
+  const n = executedIn(g, tl, i);
+  const times = n > 1 ? ` ×${n}` : '';
+  if (g.final) return { icon: 'stop', text: `CLOSED · ${tl.options.percentOnly ? formatPct(tl.finalReturn) : formatPnl(tl.finalPnl)}`, final: true };
+  if (g.opening) return { icon: 'play', text: `${side} OPENED${times} · ${formatPx(first.px, dec)}`, final: false };
+  if (g.kind === 'in') return { icon: 'plus', text: `ADDED${times} · ${formatPx(first.px, dec)}`, final: false };
+  const last = tl.fills[g.members[Math.max(0, n - 1)]];
+  const pct = first.before > 0 ? Math.round(((first.before - last.after) / first.before) * 100) : 100;
+  return { icon: 'minus', text: `TRIMMED ${pct}%${times} · ${formatPx(first.px, dec)}`, final: false };
 }
 
 /** Background, wordmark (top-left) and ticker/side tags (top-right) — shared by the replay and the end card. */
@@ -602,25 +613,34 @@ export function renderFrame(ctx: Ctx, tl: SceneTimeline, frameIndex: number): vo
     }
   }
 
-  // fill markers: IN = green, OUT = paper. Scan flash + square ripples on execution.
-  const stack = new Map<string, number>();
-  tl.fills.forEach((ev) => {
-    if (i < ev.frame) return;
-    const age = (i - ev.frame) / fps;
-    const isIn = ev.kind === 'in';
+  // execution markers, one per candle + side: IN = green, OUT = paper, with a live count ("OUT ×37").
+  // Scan flash + square ripples when a group starts. Tags that would collide shrink to dots.
+  const placed: { x0: number; x1: number; y0: number; y1: number }[] = [];
+  for (const g of tl.markers) {
+    if (i < g.firstFrame) continue;
+    const age = (i - g.firstFrame) / fps;
+    const isIn = g.kind === 'in';
     const below = isIn === long; // long: IN below the low, OUT above the high (shorts mirrored)
     const color = isIn ? COLORS.green : COLORS.ink;
     const m = L.marker;
-    const key = `${ev.candle}:${below ? 'b' : 'a'}`;
-    const nth = stack.get(key) ?? 0;
-    stack.set(key, nth + 1);
-    const c = ohlcAt(ev.candle);
-    const x = xOf(ev.candle);
-    const text = isIn ? 'IN' : 'OUT';
+    const c = ohlcAt(g.candle);
+    const x = xOf(g.candle);
+    const n = executedIn(g, tl, i);
+    const text = (isIn ? 'IN' : 'OUT') + (n > 1 ? ` ×${n}` : '');
     const tw = measureTracked(ctx, text, MONO(800, m.font), m.font, 0.06) + 16;
     const anchorY = below ? yOf(c.l) : yOf(c.h);
-    const offset = m.gap + nth * (m.h + 6);
-    const cy = below ? anchorY + offset + m.h / 2 : anchorY - offset - m.h / 2;
+    const cy = below ? anchorY + m.gap + m.h / 2 : anchorY - m.gap - m.h / 2;
+    const box = { x0: x - tw / 2 - 3, x1: x + tw / 2 + 3, y0: cy - m.h / 2 - 3, y1: cy + m.h / 2 + 3 };
+    const crowded = !g.opening && !g.final && placed.some((r) => r.x0 < box.x1 && box.x0 < r.x1 && r.y0 < box.y1 && box.y0 < r.y1);
+    if (crowded) {
+      // compact: a small square at the candle's extreme, popping in like the tags
+      const d = Math.max(5, m.h * 0.28) * popScale(age);
+      const dy = below ? anchorY + 4 + d / 2 : anchorY - 4 - d / 2;
+      ctx.fillStyle = color;
+      ctx.fillRect(x - d / 2, dy - d / 2, d, d);
+      continue;
+    }
+    placed.push(box);
 
     // scan flash: a vertical bar sweeping down the whole plot
     const scan = decay(age, 0.45);
@@ -634,15 +654,13 @@ export function renderFrame(ctx: Ctx, tl: SceneTimeline, frameIndex: number): vo
       [0, 3.4],
       [0.12, 2.4],
     ] as const) {
-      const a = age - delay;
-      const r = decay(a, 0.6);
-      if (a >= 0 && r > 0) {
-        const grow = 1 + (max - 1) * easeOut(a / 0.6);
-        const w = tw * grow;
-        const h = m.h * grow;
+      const a2 = age - delay;
+      const r = decay(a2, 0.6);
+      if (a2 >= 0 && r > 0) {
+        const grow = 1 + (max - 1) * easeOut(a2 / 0.6);
         ctx.strokeStyle = hexA(color, 0.85 * r);
         ctx.lineWidth = 2;
-        ctx.strokeRect(x - w / 2, cy - h / 2, w, h);
+        ctx.strokeRect(x - (tw * grow) / 2, cy - (m.h * grow) / 2, tw * grow, m.h * grow);
       }
     }
     // connector
@@ -659,7 +677,7 @@ export function renderFrame(ctx: Ctx, tl: SceneTimeline, frameIndex: number): vo
     ctx.fillStyle = COLORS.onGreen;
     drawTracked(ctx, text, 0, m.font * 0.36, MONO(800, m.font), m.font, 0.06, 'center');
     ctx.restore();
-  });
+  }
 
   // playhead + timecode chip
   {
@@ -713,14 +731,16 @@ export function renderFrame(ctx: Ctx, tl: SceneTimeline, frameIndex: number): vo
   // event banner (typed in, mono): opened / added / trimmed / closed
   {
     const bn = L.banner;
-    let current: { ev: FillEvent; idx: number } | null = null;
-    tl.fills.forEach((ev, idx) => {
-      if (i >= ev.frame) current = { ev, idx };
-    });
+    let current: MarkerGroup | null = null;
+    for (const g of tl.markers) if (i >= g.firstFrame && (!current || g.firstFrame >= current.firstFrame)) current = g;
+    // the close banner owns the end once the final execution has happened
+    const fin = tl.markers.find((g) => g.final);
+    if (fin && i >= tl.exitFrame) current = fin;
     if (current) {
-      const { ev, idx } = current as { ev: FillEvent; idx: number };
-      const { icon, text, final } = fillLabel(ev, idx, tl.fills, tl);
-      const age = (i - ev.frame) / fps;
+      const g = current as MarkerGroup;
+      const { icon, text, final } = groupLabel(g, tl, i);
+      const start = final ? tl.exitFrame : g.firstFrame;
+      const age = (i - start) / fps;
       if (final || age < 1.8) {
         const fade = final ? 1 : 1 - clamp01((age - 1.5) / 0.3);
         const chars = Math.min(text.length, Math.floor(age * 70) + 1);
@@ -728,7 +748,7 @@ export function renderFrame(ctx: Ctx, tl: SceneTimeline, frameIndex: number): vo
         const f = MONO(800, bn.font);
         const iconW = bn.font * 0.62 + bn.font * 0.45;
         const w = measureTracked(ctx, text, f, bn.font, 0.06) + 28 + iconW;
-        const fillC = final ? pnlColor : idx === 0 ? COLORS.green : COLORS.surface;
+        const fillC = final ? pnlColor : g.opening ? COLORS.green : COLORS.surface;
         ctx.globalAlpha = fade;
         ctx.fillStyle = fillC;
         ctx.fillRect(bn.x, bn.y, w, bn.h);

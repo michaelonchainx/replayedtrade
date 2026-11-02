@@ -17,6 +17,10 @@ export interface Fill {
   t: number;
   px: number;
   sz: number;
+  /** venue-reported realized PnL for this execution (wallet imports) — excl. funding */
+  pnl?: number;
+  /** venue-reported fee for this execution (wallet imports) */
+  fee?: number;
 }
 
 export interface Trade {

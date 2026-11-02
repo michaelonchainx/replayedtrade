@@ -46,6 +46,24 @@ describe('renderer', () => {
     }
   });
 
+  it('busy trades: one marker per candle + side, sounds spaced, close always kept', async () => {
+    const { withFills } = await import('@/lib/fills');
+    const { SOUND_MIN_GAP_SECONDS } = await import('@/lib/render/timeline');
+    const base = DEMO_CANDLES[13].t;
+    const fills = [] as { kind: 'in' | 'out'; t: number; px: number; sz: number }[];
+    for (let k = 0; k < 40; k++) fills.push({ kind: 'in', t: base + 60_000 + k * 1000, px: 78, sz: 10 });
+    for (let k = 0; k < 400; k++) fills.push({ kind: 'out', t: base + 3_600_000 * 4 + k * 60_000, px: 79, sz: 1 });
+    const trade = withFills({ ...DEMO_TRADE }, fills);
+    const { tl, ctx } = nodeScene(trade, DEMO_CANDLES, DEFAULT_OPTIONS);
+    const keys = tl.markers.map((m) => `${m.candle}:${m.kind}`);
+    expect(new Set(keys).size).toBe(keys.length);
+    expect(tl.markers.length).toBeLessThan(120);
+    const gap = Math.round(SOUND_MIN_GAP_SECONDS * tl.fps);
+    for (let k = 1; k < tl.sounds.length; k++) expect(tl.sounds[k].frame - tl.sounds[k - 1].frame).toBeGreaterThanOrEqual(gap);
+    expect(tl.sounds[tl.sounds.length - 1]).toEqual({ frame: tl.exitFrame, kind: 'close' });
+    for (const f of [tl.entryFrame + 5, tl.exitFrame, tl.frames - 1]) renderFrame(ctx, tl, f);
+  });
+
   it('renders 9:16 and short/% only variants without throwing', () => {
     const s = nodeScene({ ...DEMO_TRADE, side: 'short' }, DEMO_CANDLES, { ...DEFAULT_OPTIONS, format: '9x16', percentOnly: true, showSize: true, length: 15 });
     expect(s.tl.frames).toBe(450);

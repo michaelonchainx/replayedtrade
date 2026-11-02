@@ -31,6 +31,8 @@ export interface AppState {
   /** unit for partial-exit sizes in the executions table */
   exitUnit: 'pct' | 'tokens' | 'usd';
   forcedInterval: Interval | null;
+  /** bumped to make the player jump to 0:00 and play (e.g. after picking a wallet trade) */
+  replayNonce: number;
 
   setTrade: (t: Trade, candles?: Candle[]) => void;
   patchTrade: (p: Partial<Trade>) => void;
@@ -44,6 +46,7 @@ export interface AppState {
   setBanner: (s: string | null) => void;
   setSizing: (mode: SizeMode, amount: number) => void;
   setExitUnit: (u: AppState['exitUnit']) => void;
+  restartReplay: () => void;
 }
 
 export const tradeKey = (t: Trade) => `${t.venue === 'lighter' ? 'L' : 'H'}|${t.marketRef}|${t.entryTime}|${t.exitTime}`;
@@ -66,6 +69,7 @@ export const useApp = create<AppState>((set) => ({
   sizeAmount: Math.round(DEMO_TRADE.sizeBase * DEMO_TRADE.entryPx),
   exitUnit: 'pct',
   forcedInterval: null,
+  replayNonce: 0,
 
   setTrade: (t, candles) =>
     set(candles ? { trade: t, candles, candleKey: tradeKey(t), candleError: null } : { trade: t }),
@@ -86,4 +90,5 @@ export const useApp = create<AppState>((set) => ({
   setBanner: (banner) => set({ banner }),
   setSizing: (sizeMode, sizeAmount) => set({ sizeMode, sizeAmount }),
   setExitUnit: (exitUnit) => set({ exitUnit }),
+  restartReplay: () => set((s) => ({ replayNonce: s.replayNonce + 1 })),
 }));

@@ -12,6 +12,10 @@ export function livePnl(t: Trade, p: number): number {
 
 /** Final net PnL: Σ over all fills (average cost), minus fees. Funding excluded. */
 export function finalPnl(t: Trade): number {
+  // wallet imports: the venue's own realized PnL per execution, minus its fees
+  if (t.fills && t.fills.length >= 2 && t.fills.every((f) => f.pnl !== undefined && f.fee !== undefined)) {
+    return t.fills.reduce((s, f) => s + (f.pnl ?? 0) - (f.fee ?? 0), 0);
+  }
   if (t.fills && t.fills.length > 2) {
     // inline average-cost walk (kept here to avoid a pnl ↔ fills import cycle)
     const fs = [...t.fills].sort((a, b) => a.t - b.t || (a.kind === 'in' ? -1 : 1));

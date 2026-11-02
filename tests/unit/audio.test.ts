@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { AUDIO_SAMPLE_RATE, buildSoundtrack, kachingKindFor, synthKaching } from '@/lib/audio/kaching';
+import { AUDIO_SAMPLE_RATE, buildSoundtrack, synthKaching } from '@/lib/audio/kaching';
 import { crossedEvents } from '@/lib/audio/player';
 
 const peak = (a: Float32Array) => a.reduce((m, v) => Math.max(m, Math.abs(v)), 0);
@@ -16,15 +16,9 @@ describe('ka-ching audio', () => {
     }
   });
 
-  it('entries ching, partial exits ka-ching, the last exit is the big close', () => {
-    expect(kachingKindFor('in', 0, 4)).toBe('in');
-    expect(kachingKindFor('out', 2, 4)).toBe('out');
-    expect(kachingKindFor('out', 3, 4)).toBe('close');
-  });
-
   it('places a sound exactly at each execution frame', () => {
     const fps = 30;
-    const track = buildSoundtrack([{ kind: 'in', frame: 30 }, { kind: 'out', frame: 300 }], 750, fps);
+    const track = buildSoundtrack([{ kind: 'in', frame: 30 }, { kind: 'close', frame: 300 }], 750, fps);
     expect(track.length).toBe(25 * AUDIO_SAMPLE_RATE);
     const at = (s: number) => peak(track.subarray(Math.round(s * AUDIO_SAMPLE_RATE), Math.round((s + 0.05) * AUDIO_SAMPLE_RATE)));
     expect(at(0.5)).toBe(0); // silence before the entry

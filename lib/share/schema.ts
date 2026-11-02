@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 const finite = z.number().finite();
 
-const FillSchema = z.object({ kind: z.enum(['in', 'out']), t: z.number().int().positive(), px: finite.positive(), sz: finite.positive() });
+const FillSchema = z.object({ kind: z.enum(['in', 'out']), t: z.number().int().positive(), px: finite.positive(), sz: finite.positive(), pnl: finite.optional(), fee: finite.optional() });
 
 export const TradeSchema = z.object({
   venue: z.enum(['hyperliquid', 'lighter']),
@@ -17,7 +17,7 @@ export const TradeSchema = z.object({
   leverage: finite.min(1).max(200),
   feesUsd: finite.min(0),
   pxDecimals: z.number().int().min(0).max(6),
-  fills: z.array(FillSchema).min(2).max(60).optional(),
+  fills: z.array(FillSchema).min(2).max(4000).optional(),
 }).refine((t) => t.exitTime >= t.entryTime, 'exit before entry');
 
 export const OptionsSchema = z.object({

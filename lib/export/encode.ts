@@ -56,7 +56,7 @@ export async function encodeMp4(canvas: HTMLCanvasElement | OffscreenCanvas, ctx
   const withSound = tl.options.sound && (await ensureAac());
   const audio = withSound ? new AudioSampleSource({ codec: 'aac', bitrate: AUDIO_BITRATE }) : null;
   if (audio) output.addAudioTrack(audio);
-  const track = audio ? buildSoundtrack(tl.fills, tl.frames, tl.fps) : null;
+  const track = audio ? buildSoundtrack(tl.sounds, tl.frames, tl.fps) : null;
   const chunk = AUDIO_SAMPLE_RATE;
   let audioPos = 0;
   const pushAudioUntil = async (seconds: number) => {

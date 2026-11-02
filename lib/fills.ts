@@ -57,10 +57,19 @@ function feeShares(t: Trade, fills: Fill[]): number[] {
   return fills.map((f) => (notional > 0 ? (t.feesUsd * f.sz * f.px) / notional : 0));
 }
 
-/** Position state after applying fills[0..n). Average-cost accounting. */
+/** True when every execution carries the venue's own realized PnL + fee (wallet imports). */
+export function hasVenuePnl(fills: Fill[]): boolean {
+  return fills.length > 0 && fills.every((f) => f.pnl !== undefined && f.fee !== undefined);
+}
+
+/**
+ * Position state after applying fills[0..n). Average-cost accounting; when the venue reported
+ * realized PnL/fees per execution, those are used as-is so the replay ends on the venue's number.
+ */
 export function stateAfter(t: Trade, fills: Fill[], n: number): FillState {
   const dir = dirOf(t);
-  const fee = feeShares(t, fills);
+  const venue = hasVenuePnl(fills);
+  const fee = venue ? fills.map((f) => f.fee ?? 0) : feeShares(t, fills);
   let q = 0;
   let avg = 0;
   let realized = 0;
@@ -73,9 +82,10 @@ export function stateAfter(t: Trade, fills: Fill[], n: number): FillState {
       q += f.sz;
     } else {
       const sz = Math.min(f.sz, q);
-      realized += dir * (f.px - avg) * sz;
+      realized += venue ? (f.pnl ?? 0) : dir * (f.px - avg) * sz;
       q -= sz;
     }
+    if (venue && f.kind === 'in') realized += f.pnl ?? 0;
   }
   return { q, avg, realized, fees };
 }
@@ -103,7 +113,8 @@ export function withFills(t: Trade, raw: Fill[]): Trade {
     q += f.kind === 'in' ? f.sz : -f.sz;
     max = Math.max(max, q);
   }
-  const multi = fills.length > 2;
+  // keep the execution list for scale-ins/partials, and always for venue imports (it carries their PnL)
+  const multi = fills.length > 2 || hasVenuePnl(fills);
   return {
     ...t,
     fills: multi ? fills : undefined,

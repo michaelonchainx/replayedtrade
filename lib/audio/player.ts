@@ -1,5 +1,5 @@
 'use client';
-import { AUDIO_SAMPLE_RATE, kachingKindFor, synthKaching, type KachingKind } from './kaching';
+import { AUDIO_SAMPLE_RATE, synthKaching, type KachingKind } from './kaching';
 
 /**
  * Preview playback of the ka-chings via Web Audio. Created on a user gesture (autoplay policy);
@@ -23,8 +23,8 @@ export class KachingPlayer {
     return this.ctx.state === 'suspended' ? this.ctx.resume() : Promise.resolve();
   }
 
-  play(kind: 'in' | 'out', index: number, total: number): void {
-    const buf = this.buffers.get(kachingKindFor(kind, index, total));
+  play(kind: KachingKind): void {
+    const buf = this.buffers.get(kind);
     if (!buf) return;
     const src = this.ctx.createBufferSource();
     src.buffer = buf;

@@ -1,5 +1,18 @@
 # Decisions & deviations
 
+## Hyperliquid wallet bar (one-click replay)
+
+- A fixed bar at the bottom of the page: paste a Hyperliquid address → **Load trades** → a panel lists the closed round trips (pair, side, Hyperliquid's realized PnL, date, duration, fills, size). One click loads the trade with **every real execution**, scrolls to the player and replays it from 0:00 once its candles are in.
+- The address goes straight from the browser to `api.hyperliquid.xyz` (CORS) and is remembered in localStorage only. The fallback proxy allows `userFills`, `userFillsByTime`, `activeAssetData` and `clearinghouseState` again.
+- **Reconstruction fix:** on very active accounts Hyperliquid's `startPosition` sometimes jumps between consecutive fills (merged/system fills). Sizes now follow that position track, so entries and exits always balance. On a live 1,088-fill account this correctly split one "trade" into the three round trips that really happened.
+- **Exact PnL:** each imported execution carries Hyperliquid's `closedPnl` and `fee`. The replay builds its running PnL from them (realized from the venue, open part marked at the live price), so it ends on Hyperliquid's number. Verified to the cent on 8 live trades. Editing an imported execution drops those venue numbers and falls back to the average-cost formula.
+- **Busy trades:**
+  - Executions are grouped per candle + side into one tag with a live count ("OUT ×37").
+  - Tags that would collide shrink to small dots.
+  - Banners fire per group.
+  - Ka-chings fire once per group, at least 0.35 s apart; the final close always plays.
+- Leverage comes from Hyperliquid's current setting for that coin, falling back to 1×. It only affects the return %.
+
 ## Ka-ching sounds
 
 - Every execution gets a cash-register sound:

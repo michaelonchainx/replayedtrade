@@ -83,23 +83,17 @@ export function synthKaching(kind: KachingKind, sr = AUDIO_SAMPLE_RATE): Float32
   return out;
 }
 
-/** Which sound an execution gets: entries/adds "ching", partial exits "ka-ching", the final close the big one. */
-export function kachingKindFor(kind: 'in' | 'out', index: number, total: number): KachingKind {
-  if (kind === 'in') return 'in';
-  return index === total - 1 ? 'close' : 'out';
-}
-
 /**
- * The whole soundtrack for a replay: silence with a ka-ching at every execution's frame.
- * Overlaps are summed and soft-clipped.
+ * The whole soundtrack for a replay: silence with a ka-ching at each sound cue (the timeline's
+ * `sounds`, already grouped and spaced). Overlaps are summed and soft-clipped.
  */
-export function buildSoundtrack(events: { kind: 'in' | 'out'; frame: number }[], frames: number, fps: number, sr = AUDIO_SAMPLE_RATE): Float32Array<ArrayBuffer> {
+export function buildSoundtrack(cues: { kind: KachingKind; frame: number }[], frames: number, fps: number, sr = AUDIO_SAMPLE_RATE): Float32Array<ArrayBuffer> {
   const len = Math.ceil((frames / fps) * sr);
   const track = new Float32Array(len);
   const cache = new Map<KachingKind, Float32Array<ArrayBuffer>>();
-  events.forEach((ev, idx) => {
+  cues.forEach((ev) => {
     if (ev.frame >= frames) return;
-    const kind = kachingKindFor(ev.kind, idx, events.length);
+    const kind = ev.kind;
     let snd = cache.get(kind);
     if (!snd) {
       snd = synthKaching(kind, sr);

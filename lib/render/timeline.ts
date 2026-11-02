@@ -38,6 +38,25 @@ export interface FillEvent extends Fill {
   after: number;
 }
 
+/** Executions of one kind inside one candle, drawn as a single tag ("IN ×12"). */
+export interface MarkerGroup {
+  kind: 'in' | 'out';
+  candle: number;
+  /** indices into `fills`, in execution order */
+  members: number[];
+  /** frame of the first / last execution in the group */
+  firstFrame: number;
+  lastFrame: number;
+  /** contains the very first entry / the final exit */
+  opening: boolean;
+  final: boolean;
+}
+
+export type SoundKind = 'in' | 'out' | 'close';
+
+/** Minimum spacing between ka-chings so busy trades don't turn into noise. */
+export const SOUND_MIN_GAP_SECONDS = 0.35;
+
 export interface SceneTimeline {
   trade: Trade;
   candles: Candle[];
@@ -49,6 +68,10 @@ export interface SceneTimeline {
   intervalMs: number;
   multiDay: boolean;
   fills: FillEvent[];
+  /** fills grouped per candle + kind (what the markers and banners show) */
+  markers: MarkerGroup[];
+  /** ka-chings: one per marker group, spaced ≥ SOUND_MIN_GAP_SECONDS, the final close always kept */
+  sounds: { frame: number; kind: SoundKind }[];
   /** frame of the first `in` / last `out` */
   entryFrame: number;
   exitFrame: number;
@@ -274,6 +297,38 @@ export function buildTimeline(trade: Trade, candles: Candle[], options: RenderOp
     return { ...pl.f, candle: pl.k, p: pl.p, frame: fillFrames[n], before, after: q };
   });
 
+  // group executions per candle + kind
+  const groupMap = new Map<string, MarkerGroup>();
+  events.forEach((ev, idx) => {
+    const key = `${ev.candle}:${ev.kind}`;
+    let g = groupMap.get(key);
+    if (!g) {
+      g = { kind: ev.kind, candle: ev.candle, members: [], firstFrame: ev.frame, lastFrame: ev.frame, opening: false, final: false };
+      groupMap.set(key, g);
+    }
+    g.members.push(idx);
+    g.firstFrame = Math.min(g.firstFrame, ev.frame);
+    g.lastFrame = Math.max(g.lastFrame, ev.frame);
+    if (idx === 0) g.opening = true;
+    if (idx === events.length - 1) g.final = true;
+  });
+  const markers = [...groupMap.values()].sort((a, b) => a.firstFrame - b.firstFrame || a.members[0] - b.members[0]);
+
+  // sounds: one per group start; the close fires on the final execution and is never dropped
+  const finalFrame = fillFrames[fillFrames.length - 1];
+  const wanted = markers
+    .map((m) => ({ frame: m.final ? finalFrame : m.firstFrame, kind: (m.final ? 'close' : m.kind) as SoundKind }))
+    .sort((a, b) => a.frame - b.frame);
+  const gap = Math.round(SOUND_MIN_GAP_SECONDS * fps);
+  const sounds: { frame: number; kind: SoundKind }[] = [];
+  for (const snd of wanted) {
+    if (snd.frame >= frames) continue;
+    if (snd.kind === 'close') {
+      while (sounds.length && snd.frame - sounds[sounds.length - 1].frame < gap) sounds.pop();
+      sounds.push(snd);
+    } else if (!sounds.length || snd.frame - sounds[sounds.length - 1].frame >= gap) sounds.push(snd);
+  }
+
   return {
     trade,
     candles,
@@ -285,6 +340,8 @@ export function buildTimeline(trade: Trade, candles: Candle[], options: RenderOp
     intervalMs,
     multiDay: candles[N - 1].t - candles[0].t >= 86_400_000,
     fills: events,
+    markers,
+    sounds,
     entryFrame: fillFrames[0],
     exitFrame: fillFrames[fillFrames.length - 1],
     outroFrame: Math.min(

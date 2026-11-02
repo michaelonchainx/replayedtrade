@@ -99,7 +99,8 @@ function FillsTable({ trade, addMode, onAddMode }: { trade: Trade; addMode?: Add
   const setExitUnit = useApp((s) => s.setExitUnit);
   const coin = trade.coin.toUpperCase();
   const fills = tradeFills(trade);
-  const update = (next: Fill[]) => patchTrade(withFills(trade, next));
+  // edited executions no longer match the venue's reported PnL/fees — fall back to the formula
+  const update = (next: Fill[]) => patchTrade(withFills(trade, next.map(({ pnl: _p, fee: _f, ...rest }) => rest)));
 
   let q = 0;
   const rows = fills.map((f, i) => {

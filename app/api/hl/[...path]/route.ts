@@ -1,5 +1,5 @@
 /** Fallback proxy for Hyperliquid /info — the client calls Hyperliquid directly (CORS is allowed). */
-const ALLOWED = new Set(['meta', 'candleSnapshot']);
+const ALLOWED = new Set(['meta', 'candleSnapshot', 'userFills', 'userFillsByTime', 'activeAssetData', 'clearinghouseState']);
 
 export async function POST(req: Request, ctx: { params: Promise<{ path: string[] }> }) {
   const { path } = await ctx.params;
